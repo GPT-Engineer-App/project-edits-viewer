@@ -61,30 +61,35 @@ const Index = () => {
             <Stack spacing={4}>
               {Object.entries(jsonData.data[selectedProject])
                 .sort((a, b) => {
-                  const dateA = a[1]?.created_at?.__time__;
-                  const dateB = b[1]?.created_at?.__time__;
+                  const editA = a[1];
+                  const editB = b[1];
+                  const dateA = editA?.created_at?.__time__;
+                  const dateB = editB?.created_at?.__time__;
                   return dateB ? new Date(dateB) - (dateA ? new Date(dateA) : 0) : -1;
                 })
-                .map(([editId, edit]) => (
-                  edit && (
-                    <Box key={editId} borderWidth={1} borderRadius="md" p={4}>
-                      <Text fontWeight="bold" mb={2}>
-                        Edit ID: {editId}
-                      </Text>
-                      <Text>Created At: {edit.created_at?.__time__}</Text>
-                      {edit.content && edit.content.output && (
-                        <Box mt={4}>
-                          <Heading as="h3" size="sm" mb={2}>
-                            Content Output:
-                          </Heading>
-                          <Code p={2} whiteSpace="pre-wrap">
-                            {formatContent(edit.content.output)}
-                          </Code>
-                        </Box>
-                      )}
-                    </Box>
-                  )
-                ))}
+                .map(([key, edit]) => {
+                  const editId = key.split("/")[3];
+                  return (
+                    edit && (
+                      <Box key={editId} borderWidth={1} borderRadius="md" p={4}>
+                        <Text fontWeight="bold" mb={2}>
+                          Edit ID: {editId}
+                        </Text>
+                        <Text>Created At: {edit.created_at?.__time__}</Text>
+                        {edit.content?.output && (
+                          <Box mt={4}>
+                            <Heading as="h3" size="sm" mb={2}>
+                              Content Output:
+                            </Heading>
+                            <Code p={2} whiteSpace="pre-wrap">
+                              {formatContent(edit.content.output)}
+                            </Code>
+                          </Box>
+                        )}
+                      </Box>
+                    )
+                  );
+                })}
             </Stack>
           </Box>
         )}
