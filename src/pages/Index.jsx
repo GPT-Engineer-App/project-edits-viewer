@@ -60,24 +60,30 @@ const Index = () => {
             </Heading>
             <Stack spacing={4}>
               {Object.entries(jsonData.data[selectedProject])
-                .sort((a, b) => new Date(b[1].created_at.__time__) - new Date(a[1].created_at.__time__))
+                .sort((a, b) => {
+                  const dateA = a[1]?.created_at?.__time__;
+                  const dateB = b[1]?.created_at?.__time__;
+                  return dateB ? new Date(dateB) - (dateA ? new Date(dateA) : 0) : -1;
+                })
                 .map(([editId, edit]) => (
-                  <Box key={editId} borderWidth={1} borderRadius="md" p={4}>
-                    <Text fontWeight="bold" mb={2}>
-                      Edit ID: {editId}
-                    </Text>
-                    <Text>Created At: {edit.created_at.__time__}</Text>
-                    {edit.content && edit.content.output && (
-                      <Box mt={4}>
-                        <Heading as="h3" size="sm" mb={2}>
-                          Content Output:
-                        </Heading>
-                        <Code p={2} whiteSpace="pre-wrap">
-                          {formatContent(edit.content.output)}
-                        </Code>
-                      </Box>
-                    )}
-                  </Box>
+                  edit && (
+                    <Box key={editId} borderWidth={1} borderRadius="md" p={4}>
+                      <Text fontWeight="bold" mb={2}>
+                        Edit ID: {editId}
+                      </Text>
+                      <Text>Created At: {edit.created_at?.__time__}</Text>
+                      {edit.content && edit.content.output && (
+                        <Box mt={4}>
+                          <Heading as="h3" size="sm" mb={2}>
+                            Content Output:
+                          </Heading>
+                          <Code p={2} whiteSpace="pre-wrap">
+                            {formatContent(edit.content.output)}
+                          </Code>
+                        </Box>
+                      )}
+                    </Box>
+                  )
                 ))}
             </Stack>
           </Box>
